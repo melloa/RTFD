@@ -13,7 +13,7 @@ class BNet {
 		BNet(const string& model_file,
 				 const string& trained_file);
 
-		std::shared_ptr<Net<float> > GetNet (void);
+		std::shared_ptr<Net> GetNet (void);
 		void SetInputGeometry   (cv::Size input);
 		void FeedInput          (std::vector<cv::Mat>& imgs);
 		void Forward            (void);
@@ -24,7 +24,7 @@ class BNet {
 		void PreProcess             (std::vector<cv::Mat>* input_channels,
 																 std::vector<cv::Mat>* imgs);
 
-		std::shared_ptr<Net<float> > net;
+		std::shared_ptr<Net> net;
 
 		cv::Size input_geometry;
 };

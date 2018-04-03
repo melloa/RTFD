@@ -79,7 +79,7 @@ void BNet::PreProcess(std::vector<cv::Mat>* input_channels, // will be 3 times b
 	}
 
 	CHECK(reinterpret_cast<float*>(input_channels_org->at(0).data)
-	== net->input_blobs()[0]->cpu_data())
+	== net->input_blobs()[0]->cpu_data<float>())
 	<< "Input channels are not wrapping the input layer of the network.";
 
 }
