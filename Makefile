@@ -11,16 +11,17 @@ CaffeINC = -I$(CaffeLocation)/include/
 #opencvLocation = /usr/local/opencv
 opencvLIB= -L/usr/lib
 opencvINC = -I/usr/include
+BlasLIB = -I/usr/local/cuda-9.0/targets/x86_64-linux/include/
 
 NetLocation = ./net
 
 NetLIB = -L$(NetLocation)
 
 # g++ main.cpp queue.cpp -lpthread -lopencv_core -lopencv_imgproc -lopencv_highgui -lncurses
-GccFLAGS =  -pthread -std=c++11 -O3
+GccFLAGS =  -pthread -std=c++11 -O3 $(BlasLIB)
 GccLibs = $(CaffeLIB) $(CaffeINC) $(NetLIB) $(opencvLIB) $(opencvINC)
 
-GccLinkFLAGS = -lpthread -lprotobuf -lglog `pkg-config opencv --cflags --libs` -lboost_system -lcaffe -lnet -lncurses
+GccLinkFLAGS = -lpthread -lprotobuf -lglog `pkg-config opencv --cflags --libs` -lboost_system -lcaffe-nv -lnet -lncurses
 
 debug: GccFLAGS += -DDEBUG -g -Wall
 debug: all
