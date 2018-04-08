@@ -253,6 +253,7 @@ void* output (void *ptr) {
   cv::VideoWriter outputVideo;
   std::ofstream fddb_ofs;
   std::ofstream log_ofs;
+  std::ofstream landmarks_ofs;
 
   if (config.show_video){
     namedWindow(file_name.c_str(),CV_WINDOW_NORMAL); //create a window
@@ -269,7 +270,7 @@ void* output (void *ptr) {
   if (Packet->type == STU)
     Packet->IncreaseCounter();
 
-  while (1){
+  while (1) {
 
     Data* Packet = ptr_queue[queue_id].Remove();
 
@@ -287,7 +288,7 @@ void* output (void *ptr) {
 
     // Control Display
     if (!config.show_video && local_show_video){
-      destroyAllWindows();
+      //destroyAllWindows();
       local_show_video = 0;
 
     } else if (config.show_video && !local_show_video){
@@ -452,6 +453,7 @@ void* output (void *ptr) {
 
       // Open File for write
       log_ofs.open (comm, std::ofstream::out | std::ofstream::app);
+      cout << "Opening: " << comm << endl;
 
       if (!log_ofs.is_open()){
         cout << "Unable to open file " << comm << " for writing." << endl;
@@ -590,6 +592,6 @@ void* output (void *ptr) {
   }
 
   // Exit
-  destroyAllWindows();
+  //destroyAllWindows();
   pthread_exit(0);
 }
