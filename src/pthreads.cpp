@@ -578,13 +578,28 @@ void* output (void *ptr) {
         landmarks_ofs << Packet->name << endl;
         landmarks_ofs << Packet->landmarks.size() << endl;
         for (uint i = 0; i< Packet->landmarks.size(); i++){
-          float le  = Packet->landmarks[i].LE;
-          float re  = Packet->landmarks[i].RE;
-          float n   = Packet->landmarks[i].N;
-          float lm  = Packet->landmarks[i].LM;
-          float rm  = Packet->landmarks[i].RM;
-          landmarks_ofs << le << " " << re << " " << n << " "
-              << lm << " " << rm << endl;
+          float le_x  = Packet->landmarks[i].LE.x;
+          float le_y  = Packet->landmarks[i].LE.y;
+
+          float re_x  = Packet->landmarks[i].RE.x;
+          float re_y  = Packet->landmarks[i].RE.y;
+
+          float n_x   = Packet->landmarks[i].N.x;
+          float n_y   = Packet->landmarks[i].N.y;
+
+          float lm_x  = Packet->landmarks[i].LM.x;
+          float lm_y  = Packet->landmarks[i].LM.y;
+
+          float rm_x  = Packet->landmarks[i].RM.x;
+          float rm_y  = Packet->landmarks[i].RM.y;
+
+
+          landmarks_ofs 
+          << le_x << le_y << " " 
+          << re_x << re_y << " " 
+          << n_x << n_y << " "
+          << lm_x << lm_y << " " 
+          << rm_x << rm_y << endl;
         }
       }
     } else if (!config.fddb_results && local_fddb_results){
