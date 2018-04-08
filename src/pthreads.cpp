@@ -604,7 +604,7 @@ void* output (void *ptr) {
           }
         }
     } 
-  } } else if (!config.fddb_results && local_fddb_results){
+  }  else if (!config.fddb_results && local_fddb_results){
       local_fddb_results = 0;
       fddb_ofs.close();
     } else if (config.fddb_results && local_fddb_results){
