@@ -309,8 +309,8 @@ void* output (void *ptr) {
         frame = Packet->frame;
       }
 
-      imshow(file_name.c_str(), frame);
-      resizeWindow(file_name.c_str(), 640, 480);
+      //imshow(file_name.c_str(), frame);
+      //resizeWindow(file_name.c_str(), 640, 480);
 
       // FIXME: BUG in GTK wont allow to use waitKey
       // Image wont be desplayed when its a single image
