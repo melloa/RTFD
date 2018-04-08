@@ -453,14 +453,12 @@ void* output (void *ptr) {
 
       // Open File for write
       log_ofs.open (comm, std::ofstream::out | std::ofstream::app);
-      cout << "Opening: " << comm << endl;
 
       if (!log_ofs.is_open()){
         cout << "Unable to open file " << comm << " for writing." << endl;
         config.log_results = 0;
         local_log_results = 0;
       } else {
-        cout << "Writing " << comm << endl;
 
         // Write First Row (with metrics)
         if (config.type == VID)
@@ -484,6 +482,7 @@ void* output (void *ptr) {
         if (config.type != IMG){
           log_ofs << _avgfps << "," << _avgdur << ",";
         }
+        cout << "Writing: " << file_name << endl;
         log_ofs << total_time << ","
         << Packet->stage_time[6] << ","
         << Packet->stage_time[0] << ","
@@ -532,12 +531,19 @@ void* output (void *ptr) {
       std::string timestamp(buffer);
 
       stringstream ss;
-      ss << config.output_dir << "/" << file_name << timestamp << ".txt";
+      ss << config.output_dir << "/" << file_name << timestamp << "_fddb" << ".txt";
       string commS = ss.str();
       const char* comm = commS.c_str();
 
+      stringstream tt;
+      tt << config.output_dir << "/" << file_name << timestamp << "_landmarks" << ".txt";
+      string commT = tt.str();
+      const char* commland = commT.c_str();
+
       // Open File for write
       fddb_ofs.open (comm, std::ofstream::out | std::ofstream::app);
+      landmarks_ofs.open(commland, std::ofstream::out | std::ofstream::app);
+
 
       if (!fddb_ofs.is_open()){
         cout << "Unable to open file " << comm << " for writing." << endl;
@@ -561,6 +567,24 @@ void* output (void *ptr) {
           float score  = Packet->bounding_boxes[i].score;
           fddb_ofs << left << " " << top << " " << width << " "
               << height << " " << score << endl;
+        }
+
+      if (!landmarks_ofs.is_open()){
+      cout << "Unable to open file " << commland << " for writing." << endl;
+      } else {
+        cout << "Writing " << commland << endl;
+
+        // Write Output
+        landmarks_ofs << Packet->name << endl;
+        landmarks_ofs << Packet->landmarks.size() << endl;
+        for (uint i = 0; i< Packet->landmarks.size(); i++){
+          float le  = Packet->landmarks[i].LE;
+          float re  = Packet->landmarks[i].RE;
+          float n   = Packet->landmarks[i].N;
+          float lm  = Packet->landmarks[i].LM;
+          float rm  = Packet->landmarks[i].RM;
+          landmarks_ofs << le << " " << re << " " << n << " "
+              << lm << " " << rm << endl;
         }
       }
     } else if (!config.fddb_results && local_fddb_results){
