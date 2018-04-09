@@ -1,9 +1,0 @@
-function rect( x, y )
-    rectangle('Position',[x,y,1,1],...
-        'EdgeColor', 'r',...
-        'LineWidth', 3,...
-        'LineStyle','-')
-
-
-end
-
