@@ -187,6 +187,7 @@ void* pnet      (void *ptr){
 
 		// If Valid == 0; exit pthread
 		if (Packet->type == END){
+            cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
 			if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
 
 			//Insert packet into PNET queues for exiting (valid = -1)

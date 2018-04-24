@@ -66,7 +66,10 @@ class Queue {
 			pthread_mutex_unlock(mut);
 			return (out);
 		}
-
+        int length(void)
+        {
+                return tail;
+        }
 	private:
 		void  Add (Element in){
 			buf[tail] = in;

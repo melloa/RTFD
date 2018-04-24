@@ -67,12 +67,12 @@ void* preprocess (void *ptr) {
   //Update Packet to say this thread is ready
   if (Packet->type == STU)
     Packet->IncreaseCounter();
-
+ 
   while (1){
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
-      if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
+      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
       ptr_queue[queue_id+1].Insert(Packet);
       break;
     }
@@ -128,6 +128,7 @@ void* postprocess (void *ptr) {
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
+      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
       if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
       ptr_queue[queue_id+1].Insert(Packet);
       break;
@@ -275,6 +276,7 @@ void* output (void *ptr) {
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
+      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
       delete Packet;
       if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
       break;

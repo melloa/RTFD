@@ -494,6 +494,8 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+    std::cout << "Number of items in queue: " << ptr_queue[0].length() << endl;
+
 	// Close ncurses
 	if (config.type == CAM || config.type == VID)
 		endwin();

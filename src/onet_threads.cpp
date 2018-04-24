@@ -39,6 +39,7 @@ void* onet (void *ptr){
 		Data* Packet = ptr_queue[queue_id].Remove();
 
 		if (Packet->type == END || Packet->type == ILL){
+            cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
 			if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
 
 			// Send message to next stage
