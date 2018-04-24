@@ -193,6 +193,35 @@ void print_conf() {
 				fprintf(stderr, "--------------\n");
 }
 
+Data* read_in_image(string filename, package_type ptype) 
+{
+	cout << "Inside read function: " << filename << endl;
+	Data* packet = new Data;
+
+	// Record time
+	packet->start_time = CLOCK();
+	start = CLOCK();
+
+	// open image file for reading
+	img = cv::imread(filename, -1);
+	if(img.empty())
+	{
+		cout << "Unable to decode image " << filename << endl;
+		packet->type = END;
+		return packet;
+	}
+
+	img.copyTo(packet->frame);
+	packet->name = filename;
+	packet->type = ptype;
+
+	// Record time
+	finish = CLOCK();
+	packet->stage_time[STAGE_COUNT] = finish - start;
+	return packet;
+
+}
+
 int main(int argc, char* argv[]) {
 
 	//Caffe::set_mode(Caffe::GPU);
@@ -394,32 +423,10 @@ int main(int argc, char* argv[]) {
 
 			break;
 		}
-		case IMG: {
 
-			Data* Packet = new Data;
-
-			// Record time
-			Packet->start_time = CLOCK();
-			start = CLOCK();
-
-			// open image file for reading
-			img = cv::imread(config.full_file_name, -1);
-			if(img.empty()){
-				//endwin();
-				cout << "Unable to decode image " << config.full_file_name << endl;
-				Packet->type = END;
-				ptr_queue[0].Insert(Packet);
-				break;
-			}
-
-			img.copyTo(Packet->frame);
-			Packet->type = IMG;
-
-			// Record time
-			finish = CLOCK();
-			Packet->stage_time[STAGE_COUNT] = finish - start;
-
-			ptr_queue[0].Insert(Packet);
+		case IMG: 
+		{
+			ptr_queue[0].Insert(read_in_image(config.full_file_name, IMG));
 
 			// Finish program
 			Data* FinishPacket = new Data;
@@ -428,8 +435,9 @@ int main(int argc, char* argv[]) {
 
 			break;
 		}
-		case DTB: {
 
+		case DTB: 
+		{
 			// Setup Name of files to be processed
 			std::ifstream inputFile(config.full_file_name);
 
@@ -463,34 +471,7 @@ int main(int argc, char* argv[]) {
 				//line.append("/");
 				line.append(it->c_str());
 				line.append(".jpg");
-
-				Data* Packet = new Data;
-
-				Packet->name = it->c_str();
-
-				// Record time
-				Packet->start_time = CLOCK();
-				start = CLOCK();
-
-				// open image file for reading
-				img = cv::imread(line.c_str(), -1);
-
-				if(img.empty()){
-					//endwin();
-					cout << "Unable to decode image " << line.c_str() << endl;
-					Packet->type = END;
-					ptr_queue[0].Insert(Packet);
-					break;
-				}
-
-				img.copyTo(Packet->frame);
-				Packet->type = DTB;
-
-				// Record time
-				finish = CLOCK();
-				Packet->stage_time[STAGE_COUNT] = finish - start;
-
-				ptr_queue[0].Insert(Packet);
+				ptr_queue[0].Insert(read_in_image(line, DTB));
 
 #ifdef SEQUENTIAL_ON
 				seq_contr.WaitForCounter(1);
