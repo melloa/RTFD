@@ -60,6 +60,7 @@ void* preprocess (void *ptr) {
 
   // Receive which queue ID its supposed to access
   int queue_id = *((int *) ptr);
+  cout << "Starting on stage " << queue_id << endl;
 
   // Read StartupPacket
   Data* Packet = ptr_queue[queue_id].Remove();
@@ -72,7 +73,7 @@ void* preprocess (void *ptr) {
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
-      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
+      cout << "Exiting on stage " << queue_id << endl;
       ptr_queue[queue_id+1].Insert(Packet);
       break;
     }
@@ -116,6 +117,7 @@ void* postprocess (void *ptr) {
 
   // Receive which queue ID its supposed to access
   int queue_id = *((int *) ptr);
+  cout << "Starting on stage " << queue_id << endl;
 
   // Read StartupPacket
   Data* Packet = ptr_queue[queue_id].Remove();
@@ -128,8 +130,7 @@ void* postprocess (void *ptr) {
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
-      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
-      if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
+      cout << "Exiting on stage " << queue_id << endl;
       ptr_queue[queue_id+1].Insert(Packet);
       break;
     }
@@ -221,6 +222,7 @@ void* output (void *ptr) {
 
   // Receive which queue ID its supposed to access
   int queue_id = *((int *) ptr);
+  cout << "Starting on stage " << queue_id << endl;
 
   // File name used
   std::string file_name;
@@ -276,9 +278,8 @@ void* output (void *ptr) {
     Data* Packet = ptr_queue[queue_id].Remove();
 
     if (Packet->type == END){
-      cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
+      cout << "Exiting on stage " << queue_id << endl;
       delete Packet;
-      if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
       break;
     }
 
@@ -386,7 +387,7 @@ void* output (void *ptr) {
         outputVideo.open(comm, CV_FOURCC('M','J','P','G'), fps, S, true);
 
         if (!outputVideo.isOpened()){
-          printw("Could not open the output video for write: %s \n", comm);
+          // printw("Could not open the output video for write: %s \n", comm);
           local_record_video = 0;
           config.record_video = 0;
         }

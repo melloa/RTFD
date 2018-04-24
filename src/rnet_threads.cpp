@@ -12,6 +12,7 @@ void* rnet (void *ptr){
 
 	// Receive which queue ID its supposed to access
 	int queue_id = *((int *) ptr);
+  	cout << "Starting on stage " << queue_id << endl;
 
 	#ifdef CPU_ONLY
 		Caffe::set_mode(Caffe::CPU);
@@ -40,7 +41,7 @@ void* rnet (void *ptr){
 
 		// If Valid == 0; exit pthread
 		if (Packet->type == END){
-			if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
+            cout << "Exiting on stage " << queue_id << endl;
 
 			// Send message to next stage
 			ptr_queue[queue_id+1].Insert(Packet);

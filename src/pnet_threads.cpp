@@ -122,6 +122,7 @@ void* pnet      (void *ptr){
 
 	// Receive which queue ID its supposed to access
 	int queue_id = *((int *) ptr);
+  	cout << "Starting on stage " << queue_id << endl;
 
 	// Set up PNET stage
 	int factor_count = 0;
@@ -187,8 +188,7 @@ void* pnet      (void *ptr){
 
 		// If Valid == 0; exit pthread
 		if (Packet->type == END){
-            cout << "Received Valid = 0. Exiting on stage " << queue_id << endl;
-			if (config.debug) printw("Received Valid = 0. Exiting %d stage\n", queue_id);
+            cout << "Exiting on stage " << queue_id << endl;
 
 			//Insert packet into PNET queues for exiting (valid = -1)
 			for ( int i = 0; i < factor_count; i++ ) {
