@@ -8,6 +8,7 @@
 
 using namespace cv;
 using namespace std;
+using namespace caffe;
 
 CONF config;
 
@@ -193,6 +194,9 @@ void print_conf() {
 }
 
 int main(int argc, char* argv[]) {
+
+	Caffe::set_mode(Caffe::GPU);
+	//Caffe::get_mode()
 
 	cv::VideoCapture video;
 	cv::Mat img;
