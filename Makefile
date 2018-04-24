@@ -3,7 +3,7 @@ GCC := g++
 RM = rm -f
 
 # Specify Caffe Installation
-CaffeLocation = /usr/local/caffe-3.2
+CaffeLocation = /opt/caffe
 CaffeLIB = -L$(CaffeLocation)/build/lib
 CaffeINC = -I$(CaffeLocation)/include/
 
