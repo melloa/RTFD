@@ -195,7 +195,7 @@ void print_conf() {
 
 int main(int argc, char* argv[]) {
 
-	Caffe::set_mode(Caffe::GPU);
+	//Caffe::set_mode(Caffe::GPU);
 	//Caffe::get_mode()
 
 	cv::VideoCapture video;
