@@ -195,6 +195,8 @@ void print_conf() {
 
 Data* read_in_image(string filename, package_type ptype) 
 {
+    double start, finish;
+    cv::Mat img;
 	cout << "Inside read function: " << filename << endl;
 	Data* packet = new Data;
 
@@ -471,7 +473,7 @@ int main(int argc, char* argv[]) {
 				//line.append("/");
 				line.append(it->c_str());
 				line.append(".jpg");
-				ptr_queue[0].Insert(read_in_image(line, DTB));
+				ptr_queue[0].Insert(read_in_image(line, IMG));
 
 #ifdef SEQUENTIAL_ON
 				seq_contr.WaitForCounter(1);

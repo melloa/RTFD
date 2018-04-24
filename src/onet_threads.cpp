@@ -16,7 +16,6 @@ void* onet (void *ptr){
 	#ifdef CPU_ONLY
 		Caffe::set_mode(Caffe::CPU);
 	#else
-		std::cout << "SETTING CAFFE MODE GPU" << std::endl;
 		Caffe::set_mode(Caffe::GPU);
 	#endif
 
