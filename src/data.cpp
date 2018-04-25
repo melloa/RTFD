@@ -26,24 +26,24 @@ Data::~Data(){
 
 void Data::WaitForCounter(int num){
 	// Wait for Counter to reach a certain number
-	pthread_mutex_lock(mut);
+	/*pthread_mutex_lock(mut);
 	while (counter < num )
 		pthread_cond_wait(done, mut);
-	pthread_mutex_unlock(mut);
+	pthread_mutex_unlock(mut);*/
 }
 
 void Data::IncreaseCounter(void){
 	// Increase Counter
-	pthread_mutex_lock(mut);
+	/*pthread_mutex_lock(mut);
 	counter++;
 	pthread_cond_signal(done);
-	pthread_mutex_unlock(mut);
+	pthread_mutex_unlock(mut);*/
 }
 
 void Data::ResetCounter(void){
 	// Increase Counter
-	pthread_mutex_lock(mut);
+	/*pthread_mutex_lock(mut);
 	counter = 0;
 	pthread_cond_signal(done);
-	pthread_mutex_unlock(mut);
+	pthread_mutex_unlock(mut);*/
 }

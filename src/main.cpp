@@ -335,16 +335,15 @@ int main(int argc, char* argv[]) {
 	// Wait for children
 	if(config.debug) cout << "Waiting for child threads to exit successfully.\n";
 	for (int i = 0; i < STAGE_COUNT; i++){
-		pthread_join(pthreads[i], NULL);
+		//pthread_join(pthreads[i], NULL);
 	}
 
-	
-	preprocess((void *)&0);
-	pnet((void *)&1);
-	rnet((void *)&2);
-	onet((void *)&3);
-	postprocess((void *)&4);
-	output((void *)&5);
+	preprocess((void *)&pthread_id[0]);
+	pnet((void *)&pthread_id[1]);
+	rnet((void *)&pthread_id[2]);
+	onet((void *)&pthread_id[3]);
+	postprocess((void *)&pthread_id[4]);
+	output((void *)&pthread_id[5]);
 
 	cout << "Total Application Runtime" << endl
 			 << "\tIncluding Setup Time  :  " << CLOCK() - total_start_with_setup << " ms" << endl
