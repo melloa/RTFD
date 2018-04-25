@@ -254,6 +254,7 @@ void* output (void *ptr) {
   std::ofstream fddb_ofs;
   std::ofstream log_ofs;
   std::ofstream landmarks_ofs;
+  std::ofstream batch_ofs;
 
   if (config.show_video){
     namedWindow(file_name.c_str(),CV_WINDOW_NORMAL); //create a window
@@ -536,13 +537,25 @@ void* output (void *ptr) {
       const char* comm = commS.c_str();
 
       stringstream tt;
-      tt << config.output_dir << "/" << file_name << timestamp << "_landmarks" << ".txt";
+      tt << config.output_dir << "/" << file_name << timestamp << "_landmarks.txt";
       string commT = tt.str();
       const char* commland = commT.c_str();
+
+      stringstream oo;
+      oo << config.output_dir << "/" << "batch_output.txt";
+      string batchOuputFileName = oo.str();
+      const char* batchOuputFileNameCString = batchOuputFileName.c_str();
 
       // Open File for write
       fddb_ofs.open (comm, std::ofstream::out | std::ofstream::app);
       landmarks_ofs.open(commland, std::ofstream::out | std::ofstream::app);
+      batch_ofs.open(batchOuputFileName, std::ofstream::out | std::ofstream::app);
+
+      if (!batch_ofs.is_open()){
+        cout << "Unable to open file " << batchOuputFileName << " for writing." << endl;
+      } else {
+        batch_ofs << Packet->name << endl;
+      }
 
 
       if (!fddb_ofs.is_open()){
