@@ -249,13 +249,6 @@ int main(int argc, char* argv[]) {
 					pthread_id[i] = i;
 	}
 
-	pthread_create(&pthreads[0], NULL, preprocess   , (void *)&pthread_id[0]);
-	pthread_create(&pthreads[1], NULL, pnet         , (void *)&pthread_id[1]);
-	pthread_create(&pthreads[2], NULL, rnet         , (void *)&pthread_id[2]);
-	pthread_create(&pthreads[3], NULL, onet         , (void *)&pthread_id[3]);
-	pthread_create(&pthreads[STAGE_COUNT-2], NULL, postprocess  , (void *)&pthread_id[STAGE_COUNT-2]);
-	pthread_create(&pthreads[STAGE_COUNT-1], NULL, output       , (void *)&pthread_id[STAGE_COUNT-1]);
-
 	//Wait for all stages to setup
 	Data* StartupPacket = new Data;
 	StartupPacket->type = STU;
@@ -273,156 +266,6 @@ int main(int argc, char* argv[]) {
 	switch (config.type){
 		case CAM:
 		case VID: {
-
-			// Start ncurses lib
-			// Needed to process input keyboard correctly
-			initscr();
-
-			// Pause variable
-			bool pause = false;
-
-			// open the video file for reading
-			if (config.type == CAM){
-				video.open(config.cam_id);
-			} else {
-				video.open(config.full_file_name);
-			}
-
-			// If not successfull, exit program
-			if (!video.isOpened()) {
-				endwin();
-				cout << "Cannot open the video" << endl;
-				Data* Packet = new Data;
-				Packet->type = END;
-				ptr_queue[0].Insert(Packet);
-				break;
-			}
-
-			if (config.type == CAM){
-				fps = CAM_FPS;
-				video.set(CV_CAP_PROP_FPS, fps);
-				video.set(CV_CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
-				video.set(CV_CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
-			} else {
-				fps = video.get(CV_CAP_PROP_FPS);
-			}
-
-			double dWidth   = video.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
-			double dHeight  = video.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
-
-			// TODO: Wait variable used to wait only for the remaining time to read the
-			// next FPS at the time we have too
-			nodelay(stdscr, TRUE);
-			double wait_time  = 0.0;
-			double wait_time2 = 0.0;
-
-			bool finished = 0;
-			while (!finished){
-
-#ifdef SEQUENTIAL_ON
-				seq_contr.ResetCounter();
-#endif
-				// TODO: Wait for a little while (not full fps) before grabing next frame
-				wait_time = CLOCK();
-
-				// Control screen
-				clear();
-				printw("Heterogeneous Framework for Face Detection \nby Julian Gutierrez\n");
-				printw("------------------------------------------\n");
-
-				if(config.verbose || config.debug){
-					printw("Frame size        : %.2f x %.2f\n", dWidth, dHeight);
-					printw("Frame rate        : %.2f\n", fps);
-					printw("Current Runtime   : %.3f s\n", (CLOCK() - total_start_with_setup)/1000);
-				}
-
-				printw("[%d] Show Video     : Press 'v' to change.\n", (config.show_video)?1:0);
-				printw("[%d] Pause Video    : Press 'p' to change.\n", (pause)?1:0);
-				printw("[%d] Record Video   : Press 'r' to toggle recording.\n", (config.record_video)?1:0);
-				printw("[%d] Take Snapshot  : Press 's' to take snapshot.\n", (config.take_snapshot)?1:0);
-				printw("[%d] Write Log File : Press 'l' to toggle writing.\n", (config.log_results)?1:0);
-				printw("---------------------\n");
-				if (!output_string.empty() && (config.verbose || config.debug))
-					printw("%s", output_string.c_str());
-				printw("Press 'q' to quit.\n");
-
-				if (!pause){
-					// Read packet
-					Data* Packet = new Data;
-
-					// Record time
-					Packet->start_time = CLOCK();
-					start = CLOCK();
-
-					bool bSuccess = video.read(Packet->frame); // read a new frame from video
-
-					if (!bSuccess) {//if not success, break loop
-						printw("Cannot read a frame from video stream\n");
-						Packet->type = END;
-						ptr_queue[0].Insert(Packet);
-						break;
-					}
-
-					Packet->type = VID;
-
-					// Record time
-					finish = CLOCK();
-					Packet->stage_time[STAGE_COUNT] = finish - start;
-
-					ptr_queue[0].Insert(Packet);
-#ifdef SEQUENTIAL_ON
-					seq_contr.WaitForCounter(1);
-#endif
-
-				}
-
-				int c = getch(); // Non-blocking
-				switch (c){
-					case 113: { // 'q'
-						// Quit
-						Data* FinishPacket = new Data;
-						FinishPacket->type = END;
-						ptr_queue[0].Insert(FinishPacket);
-						finished = 1;
-						break;
-					}
-					case 114: { // 'r'
-						// Record Video
-						config.record_video = !config.record_video;
-						break;
-					}
-					case 115: { // 's'
-						// Take Snapshot
-						config.take_snapshot = !config.take_snapshot;
-						break;
-					}
-					case 108: { // 'l'
-						// Take Snapshot
-						config.log_results = !config.log_results;
-						break;
-					}
-					case 118: { // 'v'
-						// Show Video
-						config.show_video = !config.show_video;
-						break;
-					}
-					case 112: { // 'p'
-						pause = !pause;
-						break;
-					}
-					default: {
-					}
-				}
-
-				//TODO: Timing variable
-				wait_time2 = CLOCK();
-				double temp = (1000/fps)-(wait_time2-wait_time);
-				usleep (1000*max(0.0,temp));
-
-			} // while
-
-			video.release();
-
 			break;
 		}
 
@@ -463,22 +306,11 @@ int main(int argc, char* argv[]) {
 			std::vector<std::string>::const_iterator it(fileList.begin());
 			std::vector<std::string>::const_iterator end(fileList.end());
 			for(;it != end; ++it) {
-
-#ifdef SEQUENTIAL_ON
-				seq_contr.ResetCounter();
-#endif
 				std::string line;
-
 				line.append(config.image_dir);
-				//line.append("/");
 				line.append(it->c_str());
 				line.append(".jpg");
 				ptr_queue[0].Insert(read_in_image(line, IMG));
-
-#ifdef SEQUENTIAL_ON
-				seq_contr.WaitForCounter(1);
-#endif
-
 			}
 
 			// Finish program
@@ -505,6 +337,14 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < STAGE_COUNT; i++){
 		pthread_join(pthreads[i], NULL);
 	}
+
+	
+	preprocess((void *)&0);
+	pnet((void *)&1);
+	rnet((void *)&2);
+	onet((void *)&3);
+	postprocess((void *)&4);
+	output((void *)&5);
 
 	cout << "Total Application Runtime" << endl
 			 << "\tIncluding Setup Time  :  " << CLOCK() - total_start_with_setup << " ms" << endl
