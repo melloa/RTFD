@@ -14,8 +14,8 @@ void* pnet_thread(void *i) {
 	// Process received information regarding queue and scale
 	pnet_info info = *((pnet_info *) i);
 
-	#ifdef CPU_ONLY
-		Caffe::set_mode(Caffe::CPU);
+	#ifdef gpu_ONLY
+		Caffe::set_mode(Caffe::gpu);
 	#else
 		Caffe::set_mode(Caffe::GPU);
 	#endif

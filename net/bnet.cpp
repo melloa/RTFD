@@ -55,7 +55,7 @@ void BNet::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
 
 	const std::vector<int> shape = input_layer->shape();
 
-	float* input_data = input_layer->mutable_cpu_data<float>();
+	float* input_data = input_layer->mutable_gpu_data<float>();
 	for (int i = 0; i < shape[0]*shape[1]; ++i) { // num * channels (boxes*3)
 		cv::Size size(shape[3],shape[2]);
 		cv::Mat channel(size, CV_32FC1, input_data);
@@ -79,7 +79,7 @@ void BNet::PreProcess(std::vector<cv::Mat>* input_channels, // will be 3 times b
 	}
 
 	CHECK(reinterpret_cast<float*>(input_channels_org->at(0).data)
-	== net->input_blobs()[0]->cpu_data<float>())
+	== net->input_blobs()[0]->gpu_data<float>())
 	<< "Input channels are not wrapping the input layer of the network.";
 
 }

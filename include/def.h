@@ -4,7 +4,7 @@
 #include "include.h"
 #include "queue.h"
 
-//#define CPU_ONLY
+//#define gpu_ONLY
 
 //#define SEQUENTIAL_ON
 

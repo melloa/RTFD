@@ -21,17 +21,17 @@ void ONet::RetrieveOutput (std::vector<int>& shape, std::vector< std::vector <fl
 	shape.push_back(shape_score[1]);
 
 	// Write output
-	const float* begin = output_layer_score->cpu_data<float>();
+	const float* begin = output_layer_score->gpu_data<float>();
 	const float*   end = begin + shape_score[0]*shape_score[1];
 
 	vector<float> output_data_score(begin,end);
 
-	const float* pbegin = output_layer_points->cpu_data<float>();
+	const float* pbegin = output_layer_points->gpu_data<float>();
 	const float*   pend = pbegin + shape_points[0]*shape_points[1];
 
 	vector<float> output_data_points(pbegin,pend);
 
-	const float* mbegin = output_layer_mv->cpu_data<float>();
+	const float* mbegin = output_layer_mv->gpu_data<float>();
 	const float*  mend = mbegin + shape_mv[0]*shape_mv[1];
 
 	vector<float> output_data_mv(mbegin,mend);

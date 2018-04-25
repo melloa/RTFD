@@ -14,8 +14,8 @@ void* onet (void *ptr){
 	int queue_id = *((int *) ptr);
   	cout << "Starting on stage " << queue_id << endl;
 
-	#ifdef CPU_ONLY
-		Caffe::set_mode(Caffe::CPU);
+	#ifdef gpu_ONLY
+		Caffe::set_mode(Caffe::gpu);
 	#else
 		Caffe::set_mode(Caffe::GPU);
 	#endif

@@ -21,14 +21,14 @@ void PNet::RetrieveOutput (std::vector<int>& shape, std::vector< std::vector <fl
 	shape.push_back(shape_reg[3]);
 
 	// Write output
-	const float* begin = output_layer_reg->cpu_data<float>();
+	const float* begin = output_layer_reg->gpu_data<float>();
 	const float*   end = begin + shape_reg[0]*shape_reg[1]*shape_reg[2]*shape_reg[3];
 
 	vector<float> output_data_reg(begin,end);
 
 	data.push_back(output_data_reg);
 
-	const float* mbegin = output_layer_map->cpu_data<float>();
+	const float* mbegin = output_layer_map->gpu_data<float>();
 	const float*  mend = mbegin + shape_map[0]*shape_map[1]*shape_map[2]*shape_map[3];
 
 	vector<float> output_data_map(mbegin,mend);
