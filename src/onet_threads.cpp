@@ -165,6 +165,6 @@ void* onet (void *ptr){
 	}
 
 	// Exit
-	pthread_exit(0);
+	//pthread_exit(0);
 
 }

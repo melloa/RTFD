@@ -112,7 +112,7 @@ void* pnet_thread(void *i) {
 	}
 
 	// Exit
-	pthread_exit(0);
+	//pthread_exit(0);
 }
 
 void* pnet      (void *ptr){
@@ -276,6 +276,6 @@ void* pnet      (void *ptr){
 	//free (pnet_queue);
 
 	// Exit
-	pthread_exit(0);
+	//pthread_exit(0);
 
 }

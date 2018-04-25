@@ -104,7 +104,7 @@ void* preprocess (void *ptr) {
   }
 
   // Exit
-  pthread_exit(0);
+  //pthread_exit(0);
 }
 
 void* postprocess (void *ptr) {
@@ -211,7 +211,7 @@ void* postprocess (void *ptr) {
   }
 
   // Exit
-  pthread_exit(0);
+  //pthread_exit(0);
 }
 
 void* output (void *ptr) {
@@ -668,5 +668,5 @@ void* output (void *ptr) {
 
   // Exit
   //destroyAllWindows();
-  pthread_exit(0);
+  //pthread_exit(0);
 }
