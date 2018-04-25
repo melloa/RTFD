@@ -548,13 +548,39 @@ void* output (void *ptr) {
 
       // Open File for write
       fddb_ofs.open (comm, std::ofstream::out | std::ofstream::app);
-      landmarks_ofs.open(commland, std::ofstream::out | std::ofstream::app);
+      //landmarks_ofs.open(commland, std::ofstream::out | std::ofstream::app);
       batch_ofs.open(batchOuputFileName, std::ofstream::out | std::ofstream::app);
 
       if (!batch_ofs.is_open()){
         cout << "Unable to open file " << batchOuputFileName << " for writing." << endl;
       } else {
-        batch_ofs << Packet->name << endl;
+        batch_ofs << Packet->name << ".jpg" << endl;
+        batch_ofs << Packet->landmarks.size() << endl;
+          for (uint i = 0; i< Packet->landmarks.size(); i++) {
+            float le_x  = Packet->landmarks[i].LE.x;
+            float le_y  = Packet->landmarks[i].LE.y;
+
+            float re_x  = Packet->landmarks[i].RE.x;
+            float re_y  = Packet->landmarks[i].RE.y;
+
+            float n_x   = Packet->landmarks[i].N.x;
+            float n_y   = Packet->landmarks[i].N.y;
+
+            float lm_x  = Packet->landmarks[i].LM.x;
+            float lm_y  = Packet->landmarks[i].LM.y;
+
+            float rm_x  = Packet->landmarks[i].RM.x;
+            float rm_y  = Packet->landmarks[i].RM.y;
+
+
+            batch_ofs 
+            << le_x << " " << le_y << " " 
+            << re_x << " " << re_y << " " 
+            << n_x << " " << n_y << " "
+            << lm_x << " " << lm_y << " " 
+            << rm_x << " " << rm_y << endl;
+          }
+
       }
 
 
@@ -581,62 +607,26 @@ void* output (void *ptr) {
           fddb_ofs << left << " " << top << " " << width << " "
               << height << " " << score << endl;
         }
-        
-        if (!landmarks_ofs.is_open()){
-        cout << "Unable to open file " << commland << " for writing." << endl;
-        } 
-        else {
-          cout << "Writing " << commland << endl;
-
-          // Write Output
-          landmarks_ofs << Packet->name << endl;
-          landmarks_ofs << Packet->landmarks.size() << endl;
-          for (uint i = 0; i< Packet->landmarks.size(); i++) {
-            float le_x  = Packet->landmarks[i].LE.x;
-            float le_y  = Packet->landmarks[i].LE.y;
-
-            float re_x  = Packet->landmarks[i].RE.x;
-            float re_y  = Packet->landmarks[i].RE.y;
-
-            float n_x   = Packet->landmarks[i].N.x;
-            float n_y   = Packet->landmarks[i].N.y;
-
-            float lm_x  = Packet->landmarks[i].LM.x;
-            float lm_y  = Packet->landmarks[i].LM.y;
-
-            float rm_x  = Packet->landmarks[i].RM.x;
-            float rm_y  = Packet->landmarks[i].RM.y;
-
-
-            landmarks_ofs 
-            << le_x << " " << le_y << " " 
-            << re_x << " " << re_y << " " 
-            << n_x << " " << n_y << " "
-            << lm_x << " " << lm_y << " " 
-            << rm_x << " " << rm_y << endl;
-          }
+      } else if (!config.fddb_results && local_fddb_results){
+        local_fddb_results = 0;
+        fddb_ofs.close();
+      } else if (config.fddb_results && local_fddb_results){
+        // Write Output
+        fddb_ofs << Packet->name << endl;
+        fddb_ofs << Packet->bounding_boxes.size() << endl;
+        for (uint i = 0; i< Packet->bounding_boxes.size(); i++){
+          float width  = abs(Packet->bounding_boxes[i].p1.x -
+                             Packet->bounding_boxes[i].p2.x);
+          float height = abs(Packet->bounding_boxes[i].p1.y -
+                             Packet->bounding_boxes[i].p2.y);
+          float left   = min(Packet->bounding_boxes[i].p1.x,
+                             Packet->bounding_boxes[i].p2.x);
+          float top    = min(Packet->bounding_boxes[i].p1.y,
+                             Packet->bounding_boxes[i].p2.y);
+          float score  = Packet->bounding_boxes[i].score;
+          fddb_ofs << left << " " << top << " " << width << " "
+              << height << " " << score << endl;
         }
-    } 
-  }  else if (!config.fddb_results && local_fddb_results){
-      local_fddb_results = 0;
-      fddb_ofs.close();
-    } else if (config.fddb_results && local_fddb_results){
-      // Write Output
-      fddb_ofs << Packet->name << endl;
-      fddb_ofs << Packet->bounding_boxes.size() << endl;
-      for (uint i = 0; i< Packet->bounding_boxes.size(); i++){
-        float width  = abs(Packet->bounding_boxes[i].p1.x -
-                           Packet->bounding_boxes[i].p2.x);
-        float height = abs(Packet->bounding_boxes[i].p1.y -
-                           Packet->bounding_boxes[i].p2.y);
-        float left   = min(Packet->bounding_boxes[i].p1.x,
-                           Packet->bounding_boxes[i].p2.x);
-        float top    = min(Packet->bounding_boxes[i].p1.y,
-                           Packet->bounding_boxes[i].p2.y);
-        float score  = Packet->bounding_boxes[i].score;
-        fddb_ofs << left << " " << top << " " << width << " "
-            << height << " " << score << endl;
-      }
 
 
       // Write Output
@@ -666,8 +656,6 @@ void* output (void *ptr) {
         << lm_x << " " << lm_y << " " 
         << rm_x << " " << rm_y << endl;
       }
-
-
     }
 #ifdef SEQUENTIAL_ON
     seq_contr.IncreaseCounter();
