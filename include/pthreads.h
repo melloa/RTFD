@@ -16,12 +16,12 @@
  * Pthread functions
  */
 
-void* preprocess        (void *ptr);
-void* postprocess       (void *ptr);
-void* output            (void *ptr);
-void* pnet              (void *ptr);
-void* rnet              (void *ptr);
-void* onet              (void *ptr);
+void preprocess        (void *ptr);
+void postprocess       (void *ptr);
+void output            (void *ptr);
+void pnet              (void *ptr);
+void rnet              (void *ptr);
+void onet              (void *ptr);
 
 // PNET Struct for queues
 typedef struct {

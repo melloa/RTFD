@@ -53,7 +53,7 @@ bool take_snapshot;
 double _avgfps    = 0;
 double _avgdur    = 0;
 
-void* preprocess (void *ptr) {
+void preprocess (void *ptr) {
 
   // Timer
   double start, finish;
@@ -107,7 +107,7 @@ void* preprocess (void *ptr) {
   //pthread_exit(0);
 }
 
-void* postprocess (void *ptr) {
+void postprocess (void *ptr) {
 
   // Timer
   double start, finish;
@@ -214,7 +214,7 @@ void* postprocess (void *ptr) {
   //pthread_exit(0);
 }
 
-void* output (void *ptr) {
+void output (void *ptr) {
 
   // Timer
   double start, finish;
